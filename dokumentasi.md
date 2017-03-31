@@ -12,11 +12,13 @@ Langkah-langkah:
   1.	Langkah pertama
     a.	Ubah plaintext kedalam biner
     b.	Ubah key kedalam biner
+    c.  Ubah iv kedalam biner
   2.	Langkah kedua: Lakukan Initial Permutation (IP) pada bit plaintext menggunakan tabel IP
   3.	Langkah ketiga: Generate kunci yang akan digunakanuntuk mengenkripsi plaintext dengan menggunakan tabel permutasi kompresi PC-1,         pada langkah ini terjadi kompresi dengan membuang 1 bit masing-masing blok kunci dari 64 bit menjadi 56 bit
   4.	Langkah keempat: Lakukan pergeseran kiri (Left Shift)
   5.	Langkah kelima: Pada langkah ini, kita akan meng-ekspansi data Ri-1 32 bit menjadi Ri 48 bit sebanyak 16 kali putaran dengan nilai       perputaran 1<= i <=16 menggunakan Tabel Ekspansi (E)
   6.	Langkah keenam: Setiap Vektor Ai disubstitusikan kedelapan buah S-Box(Substitution Box), dimana blok pertama disubstitusikan dengan       S1, blok kedua dengan S2 dan seterusnya dan menghasilkan output vektor Bi32 bit.
+  7.  iv xor dengan C[i]D[i]
 
 
 ## Referensi
