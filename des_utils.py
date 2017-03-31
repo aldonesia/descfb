@@ -1,3 +1,20 @@
+enableDebug = True
+
+def convert_key_to_binary(key_text):
+    key_bin = string_to_binary(key_text)
+    forceDebugLine()
+    forceDebug('key text  ', key_text)
+    forceDebug('key binary', key_bin, 7)
+    return key_bin
+
+
+def convert_iv_to_binary(iv):
+    iv_bin = string_to_binary(iv)
+    forceDebugLine()
+    forceDebug('iv text  ', iv)
+    forceDebug('iv binary', iv_bin, 7)
+    return iv_bin
+
 def string_to_array(text, length):
     texts = []
     for i in range(0, len(text), length):
@@ -52,6 +69,28 @@ def xor(binary1, binary2):
             result += '1'
     return result
 
+def convert_cipher_temp_to_hex(cipher_binary_temp):
+    cipher_binary_temp_splitted = string_to_array(cipher_binary_temp, 8)
+    cipher_temp = ''
+    for c in cipher_binary_temp_splitted:
+        cipher_temp += binary_to_hex(c)
+    debugLine()
+    debug('cipher temp binary', cipher_binary_temp, 8)
+    debug('cipher temp', cipher_temp)
+    return cipher_temp
+
+def debugLine():
+    if not enableDebug:
+        return
+    print ''
+
+
+def forceDebug(tag, content, length=None):
+    content = str(content)
+    if length is None:
+        print tag + ' : ' + content
+    else:
+        print tag + ' : ' + split_string(content, length)
 
 def debug(tag, content, length=None):
     content = str(content)
@@ -59,3 +98,6 @@ def debug(tag, content, length=None):
         print tag + ' : ' + content
     else:
         print tag + ' : ' + split_string(content, length)
+
+def forceDebugLine():
+    print ''

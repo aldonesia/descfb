@@ -22,164 +22,157 @@ def sbox(binary):
         b += des_utils.int_to_binary(des_tables.SBOX[i / 6][x][y])
     return b
 
-def encrypt(plain, key_text):
-    plain_text_split = des_utils.string_to_array(plain, 8)
-    plain_binary_split = []
-    for p in plain_text_split:
-        plain_binary_split.append(des_utils.string_to_binary(p))
-    print ''
-    des_utils.debug('plain text', [plain])
-    des_utils.debug('splitted', plain_text_split)
-    des_utils.debug('plain binary', plain_binary_split)
+def convert_plain_to_binary_splitted(plain):
+    plain_splitted = des_utils.string_to_array(plain, 8)
+    plain_binary_splitted = []
+    for p in plain_splitted:
+        plain_binary_splitted.append(des_utils.string_to_binary(p))
+    des_utils.forceDebugLine()
+    des_utils.forceDebug('plain text           ', plain)
+    des_utils.forceDebug('plain splitted       ', plain_splitted)
+    des_utils.forceDebug('plain splitted binary', plain_binary_splitted)
+    return plain_binary_splitted
 
-    # key
-    key = key_text
-    key_binary = des_utils.string_to_binary(key)
-    print ''
-    des_utils.debug('key', key)
-    des_utils.debug('key binary', key_binary, 8)
+def encrypt(plain, key_text, iv):
+    plain_binary_splitted = convert_plain_to_binary_splitted(plain)
+    block = len(plain_binary_splitted)
+    
+    key_bin =  des_utils.convert_key_to_binary(key_text)
 
-    # generate C, D
-    cd0 = permutate(key_binary, des_tables.PC1)
+    iv_bin =  des_utils.convert_iv_to_binary(iv)
+
+    cd0 = permutate(key_bin, des_tables.PC1)
     c = [cd0[:len(des_tables.PC1) / 2]]
     d = [cd0[len(des_tables.PC1) / 2:]]
-    print ''
+    des_utils.debugLine()
     des_utils.debug('CD0', cd0, 7)
     for i in range(16):
         c.append(des_utils.left_shift(c[i], des_tables.LEFT_SHIFT[i]))
         d.append(des_utils.left_shift(d[i], des_tables.LEFT_SHIFT[i]))
         des_utils.debug('CD' + str(i + 1), c[i + 1] + d[i + 1], 7)
 
-    # generate K
-    print ''
+    des_utils.debugLine()
     k = ['']
     for i in range(16):
         k.append(permutate(c[i + 1] + d[i + 1], des_tables.PC2))
         des_utils.debug('K' + str(i + 1), k[i + 1], 6)
 
-    final_cipher = ''
-    for i in range(len(plain_text_split)):
+    plain_binary_splitted = [iv_bin] + plain_binary_splitted
+    cipher_binary_splitted = [iv_bin]
+    for i in range(block):
+        temp = cipher_binary_splitted[i]
 
-        # generate L, R
-        lr0 = permutate(plain_binary_split[i], des_tables.IP)
+        lr0 = permutate(temp, des_tables.IP)
         l = [lr0[:len(des_tables.IP) / 2]]
         r = [lr0[len(des_tables.IP) / 2:]]
-        print ''
+        des_utils.debugLine()
         des_utils.debug('L0', l[0], 8)
         des_utils.debug('R0', r[0], 8)
 
-        # ---
+         # core
         er = []
         a = ['']
         b = ['']
         pb = ['']
-        for i in range(16):
-            er.append(permutate(r[i], des_tables.EXPANSION))
-            a.append(des_utils.xor(er[i], k[i + 1]))
-            b.append(sbox(a[i + 1]))
-            pb.append(permutate(b[i + 1], des_tables.PBOX))
-            r.append(des_utils.xor(l[i], pb[i + 1]))
-            l.append(r[i])
-            print ''
-            des_utils.debug('ER' + str(i), er[i], 6)
-            des_utils.debug('A' + str(i + 1), a[i], 6)
-            des_utils.debug('B' + str(i + 1), b[i], 4)
-            des_utils.debug('PB' + str(i + 1), pb[i], 8)
-            des_utils.debug('R' + str(i + 1), r[i + 1], 8)
-            des_utils.debug('L' + str(i + 1), l[i + 1], 8)
+        for j in range(16):
+            er.append(permutate(r[j], des_tables.EXPANSION))
+            a.append(des_utils.xor(er[j], k[j + 1]))
+            b.append(sbox(a[j + 1]))
+            pb.append(permutate(b[j + 1], des_tables.PBOX))
+            r.append(des_utils.xor(l[j], pb[j + 1]))
+            l.append(r[j])
+            des_utils.debugLine()
+            des_utils.debug('ER' + str(j), er[j], 6)
+            des_utils.debug('A' + str(j + 1), a[j + 1], 6)
+            des_utils.debug('B' + str(j + 1), b[j + 1], 4)
+            des_utils.debug('PB' + str(j + 1), pb[j + 1], 8)
+            des_utils.debug('R' + str(j + 1), r[j + 1], 8)
+            des_utils.debug('L' + str(j + 1), l[j + 1], 8)
 
-        # cipher
-        cipher_binary = permutate(r[16] + l[16], des_tables.IP_INV)
-        cipher_binary_split = des_utils.string_to_array(cipher_binary, 8)
-        cipher = ''
-        for i in range(len(cipher_binary_split)):
-            cipher += des_utils.binary_to_hex(cipher_binary_split[i])
+        des_k = permutate(r[16] + l[16], des_tables.IP_INV)
+        cipher_binary_temp = des_utils.xor(plain_binary_splitted[i + 1], des_k)
+        cipher_binary_splitted.append(cipher_binary_temp)
+    plain_binary_splitted.remove(iv_bin)
+    cipher_binary_splitted.remove(iv_bin)
 
-        final_cipher += cipher
+    cipher_binary = ''
+    cipher_hex = ''
+    for c in cipher_binary_splitted:
+        cipher_binary += c
+        cipher_hex += des_utils.convert_cipher_temp_to_hex(c)
+    return cipher_hex
 
-    return final_cipher
 
-def decrypt(cipher, key_text):
-    key = key_text
-    key_binary = des_utils.string_to_binary(key)
-    print ''
-    des_utils.debug('key', key)
-    des_utils.debug('key binary', key_binary, 8)
+def decrypt(cipher, key_text, iv):
+    cipher = cipher.decode('hex')
+    plain_binary_splitted = convert_plain_to_binary_splitted(cipher)
+    block = len(plain_binary_splitted)
 
-    # generate C, D
-    cd0 = permutate(key_binary, des_tables.PC1)
+    key_bin =  des_utils.convert_key_to_binary(key_text)
+
+    iv_bin =  des_utils.convert_iv_to_binary(iv)
+
+    cd0 = permutate(key_bin, des_tables.PC1)
     c = [cd0[:len(des_tables.PC1) / 2]]
     d = [cd0[len(des_tables.PC1) / 2:]]
-    print ''
+    des_utils.debugLine()
     des_utils.debug('CD0', cd0, 7)
     for i in range(16):
         c.append(des_utils.left_shift(c[i], des_tables.LEFT_SHIFT[i]))
         d.append(des_utils.left_shift(d[i], des_tables.LEFT_SHIFT[i]))
         des_utils.debug('CD' + str(i + 1), c[i + 1] + d[i + 1], 7)
-
-    # generate K
-    print ''
+        
+    des_utils.debugLine()
     k = ['']
     for i in range(16):
         k.append(permutate(c[i + 1] + d[i + 1], des_tables.PC2))
         des_utils.debug('K' + str(i + 1), k[i + 1], 6)
 
-    textbits = []
-    ciphertext = ''
-    for i in cipher:
-        ciphertext += des_utils.hex_to_binary(i)
-    for i in ciphertext:
-        textbits.append(int(i))
-    print textbits
-    print ciphertext
-    number_of_vacancy = len(textbits) % 64
-    need_pads = number_of_vacancy > 0
-    if need_pads:
-        for i in range(64 - number_of_vacancy):
-            textbits.append(0)
+    plain_binary_splitted = [iv_bin] + plain_binary_splitted
+    cipher_binary_splitted = [iv_bin]
+    for i in range(block):
+        temp = plain_binary_splitted[i]
 
-    final_cipher = ''
-    for i in range(len(cipher)):
-
-        # generate L, R
-        lr0 = permutate(cipher[i], des_tables.IP)
+        lr0 = permutate(temp, des_tables.IP)
         l = [lr0[:len(des_tables.IP) / 2]]
         r = [lr0[len(des_tables.IP) / 2:]]
-        print ''
+        des_utils.debugLine()
         des_utils.debug('L0', l[0], 8)
         des_utils.debug('R0', r[0], 8)
 
-        # ---
+         # core
         er = []
         a = ['']
         b = ['']
         pb = ['']
-        for i in range(16):
-            er.append(permutate(r[i], des_tables.EXPANSION))
-            a.append(des_utils.xor(er[i], k[i + 1]))
-            b.append(sbox(a[i + 1]))
-            pb.append(permutate(b[i + 1], des_tables.PBOX))
-            r.append(des_utils.xor(l[i], pb[i + 1]))
-            l.append(r[i])
-            print ''
-            des_utils.debug('ER' + str(i), er[i], 6)
-            des_utils.debug('A' + str(i + 1), a[i], 6)
-            des_utils.debug('B' + str(i + 1), b[i], 4)
-            des_utils.debug('PB' + str(i + 1), pb[i], 8)
-            des_utils.debug('R' + str(i + 1), r[i + 1], 8)
-            des_utils.debug('L' + str(i + 1), l[i + 1], 8)
+        for j in range(16):
+            er.append(permutate(r[j], des_tables.EXPANSION))
+            a.append(des_utils.xor(er[j], k[j + 1]))
+            b.append(sbox(a[j + 1]))
+            pb.append(permutate(b[j + 1], des_tables.PBOX))
+            r.append(des_utils.xor(l[j], pb[j + 1]))
+            l.append(r[j])
+            des_utils.debugLine()
+            des_utils.debug('ER' + str(j), er[j], 6)
+            des_utils.debug('A' + str(j + 1), a[j + 1], 6)
+            des_utils.debug('B' + str(j + 1), b[j + 1], 4)
+            des_utils.debug('PB' + str(j + 1), pb[j + 1], 8)
+            des_utils.debug('R' + str(j + 1), r[j + 1], 8)
+            des_utils.debug('L' + str(j + 1), l[j + 1], 8)
 
-        # cipher
-        cipher_binary = permutate(r[16] + l[16], des_tables.IP_INV)
-        cipher_binary_split = des_utils.string_to_array(cipher_binary, 8)
-        cipher = ''
-        for i in range(len(cipher_binary_split)):
-            cipher += des_utils.binary_to_hex(cipher_binary_split[i])
+        des_k = permutate(r[16] + l[16], des_tables.IP_INV)
+        cipher_binary_temp = des_utils.xor(plain_binary_splitted[i + 1], des_k)
+        cipher_binary_splitted.append(cipher_binary_temp)
+    plain_binary_splitted.remove(iv_bin)
+    cipher_binary_splitted.remove(iv_bin)
 
-        final_cipher += cipher
-
-    return final_cipher.rstrip('\x00')
-
+    cipher_binary = ''
+    cipher_hex = ''
+    for c in cipher_binary_splitted:
+        cipher_binary += c
+        cipher_hex += des_utils.convert_cipher_temp_to_hex(c)
+    cipher = cipher_hex.decode('hex')
+    return cipher
 
 def main():
     print('Pilih : ')
@@ -187,30 +180,27 @@ def main():
     print('2. DECRYPT')
     choice = int(input())
 
-    key_text = str(input('key : \n'))
-
-
-def main():
-    print('Pilih : ')
-    print('1. ENCRYPT')
-    choice = int(input())
-
-    key_text = str(input('key : \n'))
+    key_text = str(input('key (HEX): \n'))
+    iv = str(input('iv (STRING): \n'))
 
     if(len(key_text) < 8):
-    	print('Key harus terdiri dari 8 karakter')
-    	return
+        print('Key harus terdiri dari 8 karakter')
+        return
+
+    if(len(iv) < 8):
+        print('iv harus terdiri dari 8 karakter')
+        return
 
     if(choice == 1):
         print ('string : ')
         plain = str(input())
-        cipher = encrypt(plain, key_text)
+        cipher = encrypt(plain, key_text, iv)
         print('\nCipher : ')
         print(cipher)
 
     else:
         cipher = str(input('Cipher :\n'))
-        plaintext = decrypt(cipher, key_text)
+        final = decrypt(cipher, key_text, iv)
         print('\nString :')
         print(final)
 
@@ -218,4 +208,5 @@ def main():
     return
 
 if __name__ == "__main__":
+    des_utils.enableDebug = False
     main()
