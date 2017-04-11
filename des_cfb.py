@@ -185,11 +185,15 @@ def main():
 
     # if(len(key_text) < 8):
     #     print('Key harus terdiri dari 8 karakter')
+<<<<<<< HEAD
     #     return
+=======
+    #    return
+>>>>>>> 70cb4fd39293e0851cde12bda4fdb666198edfbb
 
-    if(len(iv) < 8):
-        print('iv harus terdiri dari 8 karakter')
-        return
+    # if(len(iv) < 8):
+    #     print('iv harus terdiri dari 8 karakter')
+    #     return
 
     if(choice == 1):
         print ('string : ')
