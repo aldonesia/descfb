@@ -9,7 +9,7 @@ except NameError:
 
 def Socket():
 	ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	host = 'localhost'
+	host = '10.151.43.164'
 	port = 61616
 	ClientSocket.connect((host, port))
 	return ClientSocket
@@ -31,8 +31,8 @@ def main():
 			ClientSocket.send(text)
 
 			data_recv = ClientSocket.recv(4096)
-			print data_recv
-
+			print 'hasil : '+data_recv
+			return ClientSocket.close()
 	except KeyboardInterrupt:
 		ClientSocket.close()
 		sys.exit(0)
