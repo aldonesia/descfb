@@ -176,7 +176,7 @@ def decrypt(cipher, key_text, iv):
 def Socket():
 	ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	ServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	host = 'localhost'
+	host = '10.151.43.164'
 	port = 61616
 	ServerSocket.bind((host, port))
 	ServerSocket.listen(5)
@@ -207,7 +207,7 @@ def main():
 					else:
 						final = decrypt(text, key, iv)
 						sock.send(final)
-
+					return ServerSocket.close()
 	except KeyboardInterrupt:
 		ServerSocket.close()
 		sys.exit(0)
