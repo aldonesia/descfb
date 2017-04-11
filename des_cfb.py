@@ -183,9 +183,9 @@ def main():
     key_text = str(input('key (HEX): \n'))
     iv = str(input('iv (STRING): \n'))
 
-    if(len(key_text) < 8):
-        print('Key harus terdiri dari 8 karakter')
-        return
+    # if(len(key_text) < 8):
+    #     print('Key harus terdiri dari 8 karakter')
+    #     return
 
     if(len(iv) < 8):
         print('iv harus terdiri dari 8 karakter')
