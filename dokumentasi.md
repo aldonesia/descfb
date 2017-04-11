@@ -29,7 +29,7 @@ Langkah-langkah:
 
 ## Referensi
   http://octarapribadi.blogspot.co.id/2012/10/contoh-enkripsi-dengan-algoritma-des.html
-  
+  untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan pak Hudan Studiawan di Semester 5 Teknik Informatika ITS
 
 
 ## Dibuat oleh :
