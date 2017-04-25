@@ -9,7 +9,7 @@ except NameError:
 
 def Socket():
 	ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	host = '10.151.43.164'
+	host = socket.gethostname()
 	port = 61616
 	ClientSocket.connect((host, port))
 	return ClientSocket
@@ -21,8 +21,33 @@ def main():
 			choice = str(input('pilihan: \n'))
 			ClientSocket.send(choice)
 
-			key_text = str(input('key (HEX): \n'))
-			ClientSocket.send(key_text)
+			#key_text = str(input('key (HEX): \n'))
+			#ClientSocket.send(key_text)
+
+			q=353
+			a=3
+
+			xa = input('Masukkan random key untuk alice (xa): ')
+			int_xa = int(xa)
+			ya = (a**int_xa)%q
+			print('ini ya-> ', ya)
+
+			xb = input('masukkan random key untuk bob (xb) : ')
+			int_xb = int(xb)
+			yb = (a**int_xb)%q
+			print('ini yb-> ', yb)
+
+			kabA = (int(ya)**int_xb)%q
+			print ('ini kab versi alice->', kabA)
+
+			kabB = (int(ya)**int_xb)%q
+			print ('ini kab versi bob->', kabB)
+
+			if (kabA == kabB):
+				kab=str(kabA)
+				ClientSocket.send(kab)
+			else:
+				return ClientSocket.close()
 
 			iv = str(input('iv (STRING): \n'))
 			ClientSocket.send(iv)
