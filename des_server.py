@@ -176,7 +176,7 @@ def decrypt(cipher, key_text, iv):
 def Socket():
 	ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	ServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	host = 'localhost'
+	host = '10.151.43.167'
 	port = 61616
 	ServerSocket.bind((host, port))
 	ServerSocket.listen(5)
