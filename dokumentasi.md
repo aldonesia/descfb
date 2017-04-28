@@ -27,10 +27,22 @@ Langkah-langkah:
      bilangan hex yang akan di decrypt
   3. server dapat mengirimkan hasil encrypt atau decrypt ke client, proses encrypt maupun decrypt hanya terjadi di server.
 
+## Membuat key dengan metode Diffie-Hellman
+  1. Permisalan, client adalah alice dan server adalah bob
+  2. misal inputan alice adalah xa dan inputan bob = xb
+  3. dengan persetujuan q=353 dan a=3
+  4. menghitung respective public key dengan cara
+      untuk key alice -> ya = a**xa mod q
+      untuk key bob   -> yb = 3**xb mod q
+  5. menghitung shared session key
+      untuk key alice -> Kab = yb**xa mod q
+      untuk key bob   -> kab = ya**xb mod q
+  6. bila kab alice dan kab bob sama maka akan dijadikan key untuk proses encrypt dan decrypt selanjutnya
+  
 ## Referensi
   http://octarapribadi.blogspot.co.id/2012/10/contoh-enkripsi-dengan-algoritma-des.html
-  untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan pak Hudan Studiawan di Semester 5 Teknik Informatika ITS
-
+  untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan Pak Hudan Studiawan di Semester 5 Teknik Informatika ITS
+  untuk referensi diffie-hellman menggunakan materi dari mata kuliah Keamanan informasi dan jaringan Pak Tohari Ahmad di Semester 6 Teknik Informatika ITS
 
 ## Dibuat oleh :
    Rizky Fenaldo Maulana  - 5114100040
