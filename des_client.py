@@ -9,7 +9,7 @@ except NameError:
 
 def Socket():
 	ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	host = '10.151.43.164'
+	host = '10.151.43.167'
 	port = 61616
 	ClientSocket.connect((host, port))
 	return ClientSocket
