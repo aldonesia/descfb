@@ -2,8 +2,11 @@ import socket
 import sys
 import select
 import os
+import pickle
+import cPickle
 from des_utils import *
 from des_tables import *
+from rsa import *
 
 def permutate(binary, table):
 	permutated = ''
@@ -185,6 +188,7 @@ def Socket():
 def main():
 	ServerSocket = Socket()
 	inputSocket = [ServerSocket]
+	
 	try:
 		while True:
 			read_ready, write_ready, exception = select.select(inputSocket, [], [])
@@ -193,6 +197,40 @@ def main():
 					ClientSocket, ClientAddress = ServerSocket.accept()
 					inputSocket.append(ClientSocket)
 				else:
+					p = sock.recv(1024)
+					p=int(p)
+					q = sock.recv(1024)
+					q=int(q)
+					n = generaten(p,q)
+					n = str(n)
+					sock.send(n)
+					m = generatem(p,q)
+
+					public_key = publickey(m)
+					print('Public Key = ', public_key)
+					public_key = str(public_key)
+					sock.send(public_key)
+					private_key = privatekey(m,int(public_key))
+					print('Private Key = ', private_key)
+					private_key = str(private_key)
+					sock.send(private_key)
+
+					qdh = input('masukkan nilai q untuk metode Diffie Hillman : ')
+					qdh = str(qdh)
+					qdh_encrypt = encryptrsa(qdh, int(public_key), int(n))
+					pickle.dump(qdh_encrypt, open("encrypt_q","wb"))
+					#print qdh_encrypt
+					#qdh_encrypt=str(qdh_encrypt)
+					sock.send("silahkan di decrypt")
+
+					adh = input('masukkan nilai a untuk metode Diffie Hillman : ')
+					adh=str(adh)
+					adh_encrypt = encryptrsa(adh, int(public_key), int(n))
+					pickle.dump(adh_encrypt, open("encrypt_a","wb"))
+					#print qdh_encrypt
+					#adh_encrypt = str(adh_encrypt)
+					sock.send("silahkan di decrypt")
+
 					pilihan = sock.recv(1024)
 					print pilihan
 					

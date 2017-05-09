@@ -1,6 +1,9 @@
 import socket
 import os
 import sys
+import pickle
+import cPickle
+from rsa import *
 
 try:
     input = raw_input
@@ -22,14 +25,39 @@ def main():
 	ClientSocket = Socket()
 	try:
 		while True:
+			p = input('masukkan bilangan prima : ')
+			ClientSocket.send(str(p))
+			q = input('masukkan bilangan prima yang berbeda dengan pertama : ')
+			ClientSocket.send(str(q))
+
+			n=ClientSocket.recv(1024)
+			n=int(n)
+			print('n = ', n)
+			public_key = ClientSocket.recv(1024)
+			public_key = int(public_key)
+			print('Public Key = ', public_key)
+			
+			private_key = ClientSocket.recv(1024)
+			private_key = int(private_key)
+			print('Private Key = ', private_key)
+
+			pesan1 = ClientSocket.recv(1024)
+			q_encrypt = pickle.load(open("encrypt_q","rb"))
+			q = decryptrsa(q_encrypt, private_key, n)
+			print('q = ', q)
+			q= int(q)
+
+			pesan2 = ClientSocket.recv(1024)
+			a_encrypt = pickle.load(open("encrypt_a","rb"))
+			a = decryptrsa(a_encrypt, private_key, n)
+			print('a = ', a)
+			a = int(a)
+
 			choice = str(input('pilihan: \n'))
 			ClientSocket.send(choice)
 
 			#key_text = str(input('key (HEX): \n'))
 			#ClientSocket.send(key_text)
-
-			q=353
-			a=3
 
 			xa = input('Masukkan random key untuk alice (xa) (int) : ')
 			int_xa = int(xa)
