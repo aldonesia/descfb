@@ -38,12 +38,22 @@ Langkah-langkah:
       untuk key alice -> Kab = yb**xa mod q
       untuk key bob   -> kab = ya**xb mod q
   6. bila kab alice dan kab bob sama maka akan dijadikan key untuk proses encrypt dan decrypt selanjutnya
-  
+ 
+## Membuat key dengan RSA
+  1. untuk di client masukkan bilangan prima yang pertama dan kedua
+  2. di server akan menghitung public key dan private key
+  3. di server masukkan nilai q
+  4. server akan mengencrypt q menggunakan RSA
+  5. di client akan decrypt q menggunakan RSA
+  6. lalu di server masukkan a
+  7. di server jg akan decrypt a menggunakan RSA
+  8. di client akan encrypt a menggunakan RSA
+  9. selanjutnya mengikuti langkah Diffie-hellman
 ## Referensi
   http://octarapribadi.blogspot.co.id/2012/10/contoh-enkripsi-dengan-algoritma-des.html
   untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan Pak Hudan Studiawan di Semester 5 Teknik Informatika ITS
   untuk referensi diffie-hellman menggunakan materi dari mata kuliah Keamanan informasi dan jaringan Pak Tohari Ahmad di Semester 6 Teknik Informatika ITS
-
+  untuk referensi RSA menggunakan github dari https://gist.github.com/JonCooperWorks/5314103
 ## Dibuat oleh :
    Rizky Fenaldo Maulana  - 5114100040
-   Gllen Allan Marchelim  - 5114100171
+   Glleen Allan M          - 5114100171
