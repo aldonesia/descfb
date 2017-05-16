@@ -51,9 +51,9 @@ Langkah-langkah:
   9. selanjutnya mengikuti langkah Diffie-hellman
 ## Referensi
   http://octarapribadi.blogspot.co.id/2012/10/contoh-enkripsi-dengan-algoritma-des.html
-  untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan Pak Hudan Studiawan di Semester 5 Teknik Informatika ITS
-  untuk referensi diffie-hellman menggunakan materi dari mata kuliah Keamanan informasi dan jaringan Pak Tohari Ahmad di Semester 6 Teknik Informatika ITS
+  untuk referensi socket menggunakan tugas dari mata kuliah pemrograman jaringan Pak Hudan Studiawan di Semester 5 Teknik Informatika ITS.
+  untuk referensi diffie-hellman menggunakan materi dari mata kuliah Keamanan informasi dan jaringan Pak Tohari Ahmad di Semester 6 Teknik Informatika ITS.
   untuk referensi RSA menggunakan github dari https://gist.github.com/JonCooperWorks/5314103
 ## Dibuat oleh :
    Rizky Fenaldo Maulana  - 5114100040
-   Glleen Allan M          - 5114100171
+   Glleen Allan M         - 5114100171
