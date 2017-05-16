@@ -210,10 +210,12 @@ def main():
 					print('Public Key = ', public_key)
 					public_key = str(public_key)
 					sock.send(public_key)
-					private_key = privatekey(m,int(public_key))
-					print('Private Key = ', private_key)
-					private_key = str(private_key)
-					sock.send(private_key)
+					done = sock.recv(1024)
+					if(done=='terkirim'):
+						private_key = privatekey(m,int(public_key))
+						print('Private Key = ', private_key)
+						private_key = str(private_key)
+						sock.send(private_key)
 
 					qdh = input('masukkan nilai q untuk metode Diffie Hillman : ')
 					qdh = str(qdh)
@@ -235,8 +237,12 @@ def main():
 					print pilihan
 					
 					ya = sock.recv(1024)
-					q=353
-					a=3
+					n=int(n)
+					private_key=int(private_key)
+					q_encrypt = pickle.load(open("encrypt_q","rb"))
+					q=int(decryptrsa(q_encrypt, private_key, n))
+					a_encrypt = pickle.load(open("encrypt_a","rb"))
+					a=int(decryptrsa(a_encrypt, private_key, n))
 
 					xb = input('masukkan random key untuk bob (xb)(int) : ')
 					int_xb = int(xb)

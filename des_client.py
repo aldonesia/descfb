@@ -33,10 +33,12 @@ def main():
 			n=ClientSocket.recv(1024)
 			n=int(n)
 			print('n = ', n)
+
 			public_key = ClientSocket.recv(1024)
 			public_key = int(public_key)
 			print('Public Key = ', public_key)
-			
+			done='terkirim'
+			ClientSocket.send(done)
 			private_key = ClientSocket.recv(1024)
 			private_key = int(private_key)
 			print('Private Key = ', private_key)
